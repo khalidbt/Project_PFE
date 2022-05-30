@@ -54,7 +54,7 @@ return [
         ],
         'pfe' => [
             'driver' => 'local',
-            'root' => 'D:\pfe\storage',
+            'root' => env('STORAGE_DIR', false),
 
             'visibility' => 'public',
         ],

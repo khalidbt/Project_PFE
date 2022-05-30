@@ -19,10 +19,10 @@ class DocumentController
 
         // VALIDATE FILE TYPE
         $validator = $request->validate([
-            'file' => 'required|mimes:doc,docx,pdf,txt|max:10240',
+
             'project_id' => 'required|integer'
         ]);
-
+/*
         if ($files = $request->file('file')) {
 
             //store file into document folder
@@ -56,7 +56,28 @@ class DocumentController
 
             ]);
 
-        }
+*/
+
+        $document = new document();
+        $document->documentUrl = $request->fileName ;
+        $document->type = "pdf" ;
+        $document->save();
+
+        // CREATING PROJECT PIVOT ENTRY
+
+        $documentProjectPivot = new project_document_pivot();
+        $documentProjectPivot->project_id = $request->project_id;
+        $documentProjectPivot->document_id = $document->id;
+        $documentProjectPivot->user_id = $user->id;
+        $documentProjectPivot->save();
+
+
+
+        return response()->json([
+            "success" => true,
+            "message" => "File successfully uploaded"  ]);
+
+
     }
 
     public function getDocumentsByUser(){
@@ -85,7 +106,7 @@ class DocumentController
 
     }
 
-    public function getDocumentByProject(Request $request){
+    public function getDocumentByProject(Request $request ){
 
         // VALIDATE PAYLOAD
 

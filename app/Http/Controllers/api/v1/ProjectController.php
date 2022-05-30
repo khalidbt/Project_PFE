@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\api\v1;
 
+use App\Mail\pfeMail;
 use App\Models\project;
 use App\Models\project_user_pivot;
+use App\Models\user;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use phpseclib3\Crypt\Hash;
+use PHPUnit\Exception;
 
 class ProjectController
 {
@@ -47,7 +52,7 @@ class ProjectController
         $user = Auth::user();
 
         $validator = $request->validate([
-            'projectName' => 'required|string',
+
             'id' => 'required|integer'
 
         ]);
@@ -56,13 +61,8 @@ class ProjectController
         $constructionType = $request->exists('constructionType') ? $request->constructionType : "";
         $addresse = $request->exists('addresse') ? $request->addresse : "";
         $description = $request->exists('addresse') ? $request->description : "";
-        if ($files = $request->file('file')) {
-            $file = $request->file('file');
 
-            $filePath = Storage::disk('pfe')->put('/images', $file);
-        } else {
-            $filePath = "";
-        }
+
 
         // get project
 
@@ -71,7 +71,7 @@ class ProjectController
         $project->constructionType = $constructionType;
         $project->addresse = $addresse;
         $project->description = $description;
-        $project->image_url = $filePath;
+        $project->image_url =  $request->image_url;
         $project->save();
 
         return response()->json([
@@ -106,6 +106,8 @@ class ProjectController
 
         $project = project::where('id' ,$request->project_id)->first();
 
+
+
         return response()->json([
             "success" => true ,
             "project" => $project
@@ -123,10 +125,76 @@ class ProjectController
 
         $projects = project::find($projectIds);
 
+        $projects->transform(function ($project){
+            $project->image_url = json_decode($project->image_url);
+            return $project;
+
+        });
+
         return response()->json([
             "success" => true ,
             "projects" => $projects
         ]);
+    }
+
+
+    public function addCollaborateur(Request $request){
+
+
+        try {
+
+
+            $password = "something";
+            $user = new user();
+            $user->email = $request->email;
+            $user->preName = $request->preName;
+            $user->lastName = $request->lastName;
+
+            $user->password = \Illuminate\Support\Facades\Hash::make($password);
+            $user->save();
+
+            $mailData = [
+                'title' => 'Mail from MTS Group',
+                'body' => 'Thank you for registering !! .'
+            ];
+
+            Mail::to($user->email)->send(new pfeMail($mailData));
+            return response()->json([
+                "success" => true ,
+                "user" => $request
+            ]);
+
+
+        }catch (Exception $exception){
+
+            echo $exception->getMessage();
+        }
+
+
+
+    }
+
+
+
+    public function test (Request $request) {
+
+        try {
+
+
+
+            return response()->json([
+                "data" => [],
+                "success" => true ,
+
+            ]);
+
+
+        }catch (Exception $exception){
+
+            echo $exception->getMessage();
+        }
+
+
     }
 
 }
