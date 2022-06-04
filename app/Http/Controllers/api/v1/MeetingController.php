@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\api\v1;
 
+use App\Helpers\ICS;
 use App\Models\Meeting;
+use App\Models\project;
 use Carbon\Carbon;
 use Carbon\Exceptions\Exception;
 use Illuminate\Http\Request;
@@ -66,7 +68,7 @@ class MeetingController
 
         $date = substr($request->date , 0  , 10);
 
-        $carbonDate = Carbon::createFromFormat('Y/m/d' , $date);
+        $carbonDate = Carbon::createFromFormat('Y-m-d' , $date);
         $carbonDate->subDay(1);
         $date = $carbonDate->format("Y/m/d");
 
@@ -98,6 +100,46 @@ class MeetingController
             "success" => true ,
             "data" => $meetings
         ]);
+
+
+    }
+
+    public function generateQrCode(Request $request){
+
+        $meeting = Meeting::find($request->id);
+        $project = project::find($meeting->projectId);
+        $icsCalendar = new ICS();
+
+        $start = $meeting->date ;
+        $end = $meeting->date ;
+        $name = $project->projectName;
+        $description = $meeting->object ;
+        $location = $project->addresse ;
+
+
+        $icsCalendar->ICS($start,$end,$name,$description,$location);
+
+        $pdf = new \TCPDF2DBarcode((string)$icsCalendar->getData() , 'QRCODE,L');
+
+        $fileName = $meeting->id.'.png';
+        $path = resource_path()."/photos/meetings/".$fileName;
+
+        //transforming qrcode into png image and putting it into /Images directory
+
+        if ( ! \Illuminate\Support\Facades\File::exists(resource_path()."/photos/meetings/")){
+            \Illuminate\Support\Facades\File::makeDirectory(resource_path()."/photos/meetings/");
+        }
+
+        file_put_contents($path, $pdf->getBarcodePngData(6, 6, array(0,0,0)));
+        $extencion = 'png';
+
+
+        $image = file_get_contents($path);
+        $img_base_64 = base64_encode($image);
+        $qrCode = 'data:image/' . $extencion . ';base64,' . $img_base_64;
+
+        $data['qrcode'] = $qrCode;
+        return response()->json($data);
 
 
     }

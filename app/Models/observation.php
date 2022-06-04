@@ -16,6 +16,7 @@ class observation extends Model
         'limite',
         'lever',
         'lot',
+        'status',
 
     ];
 

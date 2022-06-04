@@ -51,6 +51,7 @@ return [
 
         'mailgun' => [
             'transport' => 'mailgun',
+
         ],
 
         'postmark' => [

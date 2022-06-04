@@ -23,6 +23,7 @@ class CreateObservationsTable extends Migration
             $table->string('limite')->nullable();
             $table->string('lever')->nullable();
             $table->string('lot')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

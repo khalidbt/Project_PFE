@@ -58,6 +58,7 @@ Route::middleware('auth:api')->group( function (){
     Route::post('getMeeting' , [\App\Http\Controllers\api\v1\MeetingController::class , 'getMeetingsByProject']);
     Route::post('updateMeeting' , [\App\Http\Controllers\api\v1\MeetingController::class , 'updateMeeting']);
     Route::post('deleteMeeting' , [\App\Http\Controllers\api\v1\MeetingController::class , 'deleteMeeting']);
+    Route::post('generateQrCode' , [\App\Http\Controllers\api\v1\MeetingController::class , 'generateQrCode']);
 
     // ZONE ROUTES
 
@@ -90,6 +91,16 @@ Route::middleware('auth:api')->group( function (){
 
 
 
+
+
+
+
 });
+
+// PAYPAL ROUTES
+
+Route::get('handle-payment', [\App\Http\Controllers\api\v1\PayPalController::class , 'handlePayment'])->name('make.payment');
+Route::get('cancel-payment', [\App\Http\Controllers\api\v1\PayPalController::class , 'paymentCancel'])->name('cancel.payment');
+Route::get('payment-success', [\App\Http\Controllers\api\v1\PayPalController::class , 'paymentSuccess'])->name('success.payment');
 
 Route::get('send-mail', [MailController::class, 'index']);

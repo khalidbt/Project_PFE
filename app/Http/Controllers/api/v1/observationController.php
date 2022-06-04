@@ -58,6 +58,7 @@ class observationController
         $observation->created = $request->created;
         $observation->limite = $request->limite;
         $observation->lever = $request->lever;
+        $observation->status = $request->status;
         $observation->lot = $request->lot;
 
         $observation->save();
