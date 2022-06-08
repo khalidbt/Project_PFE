@@ -84,10 +84,20 @@ Route::middleware('auth:api')->group( function (){
 
     // OBSERVATION
 
-    Route::post('observation' , [\App\Http\Controllers\api\v1\observationController::class , 'update']);
-    Route::post('updateObservation' , [\App\Http\Controllers\api\v1\observationController::class , 'update']);
+    Route::post('observation' , [\App\Http\Controllers\api\v1\observationController::class , 'addObservation']);
+    Route::put('test' , [\App\Http\Controllers\api\v1\test::class , 'test']);
     Route::post('deleteObservation' , [\App\Http\Controllers\api\v1\observationController::class , 'delete']);
     Route::post('getObservations' , [\App\Http\Controllers\api\v1\observationController::class , 'getObservationByProjectId']);
+
+    // LET LOTS DE TRAVAIL
+
+    Route::post('lots' , [\App\Http\Controllers\api\v1\LotController::class , 'lotDescription']);
+    Route::post('addlot' , [\App\Http\Controllers\api\v1\LotController::class , 'addLot']);
+    Route::post('getLots' , [\App\Http\Controllers\api\v1\LotController::class , 'getLots']);
+
+    /// PDF
+    ///
+    Route::post('pdfGenerate' , [\App\Http\Controllers\api\v1\PdfController::class , 'generateRapport' ]);
 
 
 
