@@ -46,7 +46,7 @@ class CollaborateurController
             'body' => 'you have been added as a project collaborator , this is your password :  '.$password
         ];
 
-        Mail::to($user->email)->send(new pfeMail($mailData));
+        //Mail::to($user->email)->send(new pfeMail($mailData));
         return response()->json([
             "success" => true ,
             "user" => $user

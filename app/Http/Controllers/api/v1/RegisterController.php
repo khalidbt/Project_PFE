@@ -38,7 +38,7 @@ class RegisterController
             'body' => 'Thank you for registering !! .'
         ];
 
-        Mail::to($registerUser['email'])->send(new pfeMail($mailData));
+       // Mail::to($registerUser['email'])->send(new pfeMail($mailData));
 
         return response()->json([
             "success" => true ,

@@ -56,7 +56,7 @@ class LoginController
             ];
             $user->save();
 
-            Mail::to($user->email)->send(new pfeMail($mailData));
+            //Mail::to($user->email)->send(new pfeMail($mailData));
 
             return response()->json([
                 "success" => true
